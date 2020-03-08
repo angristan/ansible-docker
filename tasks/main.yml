@@ -1,0 +1,34 @@
+---
+
+- name: Add Docker CE APT key
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: Add Docker CE APT repo
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+    state: present
+    filename: docker
+
+- name: Install Docker CE
+  apt:
+    name: docker-ce
+
+- name: Add docker logrotate for containers
+  copy:
+    src: ../files/etc/logrotate.d/docker
+    dest: /etc/logrotate.d/
+
+- name: Install docker-compose
+  pip:
+    name: docker-compose
+    state: latest
+    executable: pip3
+
+- name: Add docker image prune cron
+  cron:
+    name: docker_system_prune
+    minute: '0'
+    hour: '5'
+    job: 'docker image prune -af > /tmp/docker_prune.log 2>&1'
