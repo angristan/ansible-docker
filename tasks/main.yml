@@ -17,13 +17,12 @@
 
 - name: Add docker logrotate for containers
   copy:
-    src: ../files/etc/logrotate.d/docker
+    src: etc/logrotate.d/docker
     dest: /etc/logrotate.d/
 
 - name: Install docker-compose
   pip:
     name: docker-compose
-    state: latest
     executable: pip3
 
 - name: Add docker image prune cron
